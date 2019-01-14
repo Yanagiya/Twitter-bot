@@ -35,9 +35,9 @@ function cycleTweet() {
   })
 
   //HTTPリッスン
-  app.set('port', (process.env.PORT || 3010));
+  app.set('port', (process.env.PORT || 5000));
   app.get('/', function(req, res) {
-    res.send('Hello World')
+    res.send('Hello World with Azure')
   })
   app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'));
