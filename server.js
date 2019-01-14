@@ -5,10 +5,10 @@ var CronJob = require('cron').CronJob;
 var app = express();
 
 var twitter = new Twitter({
-  consumer_key: 'iVEU35YVqtisldohqQil3AdDM',
-  consumer_secret: 'Na7wYGehx6MPZOIdQUXUCG7IPpXFDczYtUMd1yIBDZ7PGsICTq',
-  access_token_key: '1079396527875928064-Y1Ie4IzhM2FXex0O0WnhKpig7yO6ly',
-  access_token_secret: '8c1SVKAz01M5Dz6D4iMpIFkWUWIOnToVwUWHihbNTtWwE',
+  consumer_key: process.env[`CONSUMER_KEY`],
+  consumer_secret: process.env['CONSUMER_SECRET'],
+  access_token_key: process.env['ACCESS_TOKEN_KEY'],
+  access_token_secret: process.env['ACCESS_TOKEN_SECRET'],
 })
 
 var cronTime = '0 * * * * *';
