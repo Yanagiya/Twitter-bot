@@ -5,20 +5,21 @@ var mysql = require('mysql');
 
 var app = express();
 
-{/*}
+
 var twitter = new Twitter({
-  consumer_key: process.env[`CONSUMER_KEY`],
+  consumer_key: process.env['CONSUMER_KEY'],
   consumer_secret: process.env['CONSUMER_SECRET'],
   access_token_key: process.env['ACCESS_TOKEN_KEY'],
   access_token_secret: process.env['ACCESS_TOKEN_SECRET'],
 })
-*/}
+{/*
 var twitter = new Twitter({
   consumer_key: `iVEU35YVqtisldohqQil3AdDM`,
   consumer_secret: 'Na7wYGehx6MPZOIdQUXUCG7IPpXFDczYtUMd1yIBDZ7PGsICTq',
   access_token_key: '1079396527875928064-Y1Ie4IzhM2FXex0O0WnhKpig7yO6ly',
   access_token_secret: '8c1SVKAz01M5Dz6D4iMpIFkWUWIOnToVwUWHihbNTtWwE',
 })
+*/}
 
 var cronTime = '0 * * * * *';
 new CronJob({
@@ -47,16 +48,22 @@ var tipsArray = [
   ];
 */}
 function cycleTweet() {
-  var tips = tipsArray[Math.floor(Math.random() * tipsArray.length)];
-
-  //自動投稿
-  twitter.post('statuses/update', {status: tips}, (err, tweet, response)=> {
+  connection.query('select tips from tips order by rand() limit 1', function(err,rows) {
     if(err) {
       return console.log(err);
     }else{
-      return console.log(tweet);
+      tips = rows[0].tips;
+      console.log(tips);
+      twitter.post('statuses/update', {status: tips}, (err, tweet, response)=> {
+        if(err) {
+          return console.log(err);
+        }else{
+          return console.log(tweet);
+        }
+      })
     }
   })
+}
 
   //HTTPリッスン
   app.set('port', (process.env.PORT || 5000));
@@ -66,4 +73,3 @@ function cycleTweet() {
   app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'));
   })
-}
