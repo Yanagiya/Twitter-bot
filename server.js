@@ -30,46 +30,52 @@ new CronJob({
   start: true
 })
 
+// MySQL in Appデータベース接続詞
+var connectionString = process.env.MYSQLCONNSTR_localdb;
+var host = /Data Source=([0-9\.]+)\:[0-9]+\;/g.exec(connectionString)[1];
+var port = /Data Source=[0-9\.]+\:([0-9]+)\;/g.exec(connectionString)[1];
+var database = /Database=([0-9a-zA-Z]+)\;/g.exec(connectionString)[1];
+var username = /User Id=([a-zA-z0-9\s]+)\;/g.exec(connectionString)[1];
+var password = /Password=(.*)/g.exec(connectionString)[1];
+var exampleSql = "";
+
 var connection = mysql.createConnection({
-  host : 'localhost',
-  user : 'test_user',
-  password : 'password',
-  database : 'test'
-})
-{/*}
-var tipsArray = [
-    "おはよう",
-    "こんにちは",
-    "こんばんは",
-    "おやすみ",
-    "また明日",
-    "今日も素晴らしい一日だった",
-    "明日はもっと素敵な一日になるだろう"
-  ];
-*/}
+  host     : host,
+  port     : port,
+  user     : username,
+  password : password,
+  database : database,
+  debug    : true
+});
+
+// ランダムにつぶやく関数
 function cycleTweet() {
-  connection.query('select tips from tips order by rand() limit 1', function(err,rows) {
+
+  //tipsテーブルからランダムにとってくるselect文
+  connection.query('select tips from tips order by rand() limit 1', function(err, rows) {
     if(err) {
-      return console.log(err);
+      return console.log(err)
     }else{
-      tips = rows[0].tips;
-      console.log(tips);
+      tips = rows[0].tips
+      console.log(tips)
+      // 自動投稿
       twitter.post('statuses/update', {status: tips}, (err, tweet, response)=> {
         if(err) {
-          return console.log(err);
+          return console.log(err)
         }else{
-          return console.log(tweet);
+          return console.log(tweet)
         }
       })
+
     }
   })
 }
 
-  //HTTPリッスン
-  app.set('port', (process.env.PORT || 5000));
-  app.get('/', function(req, res) {
-    res.send('Hello World with Azure')
-  })
-  app.listen(app.get('port'), function() {
-    console.log("Node app is running at localhost:" + app.get('port'));
-  })
+//HTTPリッスン
+app.set('port', (process.env.PORT || 5000));
+app.get('/', function(req, res) {
+  res.send('Hello World with Azure')
+})
+app.listen(app.get('port'), function() {
+  console.log("Node app is running at localhost:" + app.get('port'));
+})
